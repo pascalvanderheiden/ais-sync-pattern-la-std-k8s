@@ -5,6 +5,9 @@ Running Logic Apps Standard in Kubernetes on-premise managed by Azure Arc.
 * Install Minikube to run Kubernetes locally [Minikube](https://minikube.sigs.k8s.io/docs/start/)
 * Install Visual Studio Code [Visual Studio Code](https://code.visualstudio.com/download)
 * Install Azure CLI [Azure CLI](https://docs.microsoft.com/nl-nl/cli/azure/install-azure-cli-windows?tabs=azure-cli)
+* Install Azure Function Core Tools [Azure Functions Core Tools](https://github.com/Azure/azure-functions-core-tools)
+* Install Azure Logic Apps (Standard) Extension for VSCode [Azure Logic Apps (Standard)](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-azurelogicapps)
+* Install Azurite Extension for VSCode [Azurite](https://marketplace.visualstudio.com/items?itemName=Azurite.azurite)
 
 ## Setup Kubernetes Cluster locally
 * Start Minikube (initialize Kubernetes cluster locally)
@@ -20,12 +23,15 @@ az login
 az extension add --name connectedk8s
 az extension add --name k8s-extension
 az extension add --name customlocation
+az extension add --upgrade -n appservice-kube
 ```
 * Register providers
 ```
 az provider register --namespace Microsoft.Kubernetes
 az provider register --namespace Microsoft.KubernetesConfiguration
 az provider register --namespace Microsoft.ExtendedLocation
+az provider register --namespace Microsoft.Web
+az provider register --namespace Microsoft.OperationalInsights
 ```
 
 ## Setup Azure Arc & connect to Kubernetes cluster 
@@ -73,8 +79,18 @@ az connectedk8s enable-features -n $clusterName -g $resourceGroup --features clu
 $extensionName="appservice-ext" # Name of the App Service extension
 $namespace="default" # Namespace in your cluster to install the extension and provision resources
 $kubeEnvironmentName="SURFACE_LAPTOP" # Name of the App Service Kubernetes environment resource
-$logAnalyticsWorkspaceIdEnc=$(az monitor log-analytics workspace show -g $resourceGroupMonitor --workspace-name $logAnalytics --query customerId -o tsv) # Log Analytics Workspace Id
-$logAnalyticsKeyEnc=$(az monitor log-analytics workspace get-shared-keys --resource-group $resourceGroupMonitor --workspace-name $logAnalytics --query primarySharedKey -o tsv) # Log Analytics Key
+$logAnalyticsWorkspaceId=$(az monitor log-analytics workspace show `
+    --resource-group $resourceGroupMonitor `
+    --workspace-name $logAnalytics `
+    --query customerId `
+    --output tsv)
+$logAnalyticsWorkspaceIdEnc=[Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($logAnalyticsWorkspaceId))# Needed for the next step
+$logAnalyticsKey=$(az monitor log-analytics workspace get-shared-keys `
+    --resource-group $resourceGroupMonitor `
+    --workspace-name $logAnalytics `
+    --query primarySharedKey `
+    --output tsv)
+$logAnalyticsKeyEnc=[Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($logAnalyticsKey))
 
 az k8s-extension create `
     --resource-group $resourceGroup `
@@ -97,4 +113,25 @@ az k8s-extension create `
     --configuration-settings "logProcessor.appLogs.destination=log-analytics" `
     --configuration-protected-settings "logProcessor.appLogs.logAnalyticsConfig.customerId=${logAnalyticsWorkspaceIdEnc}" `
     --configuration-protected-settings "logProcessor.appLogs.logAnalyticsConfig.sharedKey=${logAnalyticsKeyEnc}"
+```
+* Save the App Service extention property id
+```ps1
+$extensionId=$(az k8s-extension show `
+    --cluster-type connectedClusters `
+    --cluster-name $clusterName `
+    --resource-group $resourceGroup `
+    --name $extensionName `
+    --query id `
+    --output tsv)
+```
+* Create a Custom Location
+```ps1
+$customLocationName="surface-laptop" # Name of the custom location
+$connectedClusterId=$(az connectedk8s show --resource-group $resourceGroup --name $clusterName --query id --output tsv)
+az customlocation create `
+    --resource-group $resourceGroup `
+    --name $customLocationName `
+    --host-resource-id $connectedClusterId `
+    --namespace $namespace `
+    --cluster-extension-ids $extensionId
 ```
