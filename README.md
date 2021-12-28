@@ -238,8 +238,9 @@ az appservice kube show --resource-group $resourceGroupArc --name $kubeEnvironme
 
 ## Deploy your Logic App to your Custom Location
 
-Now everything is setup to follow the normal process of deploying your Logic App Standard to the new location.
--Create a Logic App by creating a new project
--Develop your Logic App using builtin designer
--Right-click on this Project, deploy to Logic Apps, and deploy the hello-world-wf I've created as an example.
--When choosing the Location, search for your Custom Location in Regions List.
+Now everything is setup to follow the normal process of [deploying your Logic App Standard](https://docs.microsoft.com/en-us/azure/logic-apps/azure-arc-enabled-logic-apps-create-deploy-workflows?tabs=azure-cli) to the new location.
+
+* Create a Logic App by creating a new project
+* Develop your Logic App using builtin designer
+* Right-click on this Project, deploy to Logic Apps, and deploy the hello-world-wf I've created as an example.
+* When choosing the Location, search for your Custom Location in Regions List.
