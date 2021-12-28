@@ -1,6 +1,6 @@
 # ais-sync-pattern-la-std-k8s
 
-Running Logic Apps Standard in Kubernetes on-premise or Azure Kubernetes Service managed by Azure Arc.
+Running Logic Apps Standard in Azure Kubernetes Service managed by Azure Arc.
 
 ## Architecture
 
