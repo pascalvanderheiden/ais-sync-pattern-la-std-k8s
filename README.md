@@ -27,7 +27,7 @@ az group create --name $resourceGroupAks --location WestEurope --output table
 
 ```ps1
 $clusterName="ais-aks"
-az aks create --resource-group $resourceGroupAks --name $clusterName --node-count 1 --enable-addons monitoring --generate-ssh-keys
+az aks create --resource-group $resourceGroupAks --name $clusterName --node-count 3 --enable-addons monitoring --generate-ssh-keys
 ```
 
 * Create a public static ip for AKS
