@@ -2,19 +2,19 @@
 	"version": "2.0.0",
 	"tasks": [
 		{
-			"label": "generateDebugSymbols",
+			"label": "build",
 			"command": "dotnet",
+			"type": "shell",
 			"args": [
-				"${input:getDebugSymbolDll}"
+				"build",
+				"/property:GenerateFullPaths=true",
+				"/consoleloggerparameters:NoSummary"
 			],
-			"type": "process",
+			"group": "build",
+			"presentation": {
+				"reveal": "silent"
+			},
 			"problemMatcher": "$msCompile"
-		},
-		{
-			"type": "func",
-			"command": "host start",
-			"problemMatcher": "$func-watch",
-			"isBackground": true
 		}
 	],
 	"inputs": [

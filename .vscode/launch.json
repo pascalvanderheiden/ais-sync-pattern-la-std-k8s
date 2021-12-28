@@ -2,10 +2,22 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Attach to .NET Functions",
+            "name": ".NET Core Launch (console)",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceRoot}/bin/Debug/netcoreapp3.0/console.dll",
+            "args": [],
+            "cwd": "${workspaceRoot}",
+            "externalConsole": false,
+            "stopAtEntry": false,
+            "internalConsoleOptions": "openOnSessionStart"
+        },
+        {
+            "name": ".NET Core Attach",
             "type": "coreclr",
             "request": "attach",
-            "processId": "${command:azureLogicAppsStandard.pickProcess}"
+            "processId": "${command.pickProcess}"
         }
     ]
 }

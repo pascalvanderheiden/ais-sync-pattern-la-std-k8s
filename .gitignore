@@ -2,6 +2,10 @@
 # Azure Functions artifacts
 bin
 obj
+.vscode
+__blobstorage__
+__azurite_db_blob__.json
+__azurite_db_blob_extent__.json
 appsettings.json
 local.settings.json
 tests.http
