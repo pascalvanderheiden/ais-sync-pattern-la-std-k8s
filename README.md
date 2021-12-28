@@ -1,5 +1,5 @@
 # ais-sync-pattern-la-std-k8s
-Running Logic Apps Standard in Kubernetes on-premise managed by Azure Arc.
+Running Logic Apps Standard in Kubernetes on-premise or Azure Kubernetes Service managed by Azure Arc.
 
 ## Prerequisites
 * Install Minikube to run Kubernetes locally [Minikube](https://minikube.sigs.k8s.io/docs/start/)
@@ -46,7 +46,7 @@ az aks install-cli
 az aks get-credentials --resource-group $resourceGroupAks --name $clusterName
 ```
 
-## Instructions
+## Providers & Extensions
 * Log into Azure CLI and follow the instructions
 ```
 az login
@@ -194,3 +194,9 @@ az appservice kube create `
     --static-ip $staticIp # only on AKS
 az appservice kube show --resource-group $resourceGroupArc --name $kubeEnvironmentName
 ```
+
+## Deploy your Logic App to your Custom Location
+Now everything is setup to follow the normal process of deploying your Logic App Standard to the new location.
+* Create a Logic App by creating a new project
+* Develop your Logic App using builtin designer
+* Right-click on your Project, deploy to Logic App. 
