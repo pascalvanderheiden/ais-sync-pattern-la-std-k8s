@@ -1,6 +1,7 @@
 # ais-sync-pattern-la-std-k8s
 
 Running Logic Apps Standard in Azure Kubernetes Service managed by Azure Arc.
+This deployment is based on [this](https://docs.microsoft.com/en-us/azure/app-service/manage-create-arc-environment?tabs=powershell#prerequisites) Microsoft Docs reference.
 
 ## Architecture
 
@@ -14,7 +15,35 @@ Running Logic Apps Standard in Azure Kubernetes Service managed by Azure Arc.
 * Install Azure Logic Apps (Standard) Extension for VSCode [Azure Logic Apps (Standard)](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-azurelogicapps)
 * Install Azurite Extension for VSCode to test Logic Apps locally [Azurite](https://marketplace.visualstudio.com/items?itemName=Azurite.azurite)
 
-## Using Azure Kubernetes Service
+## Providers & Extensions
+
+* Log into Azure CLI and follow the instructions
+
+```ps1
+az login
+```
+
+* Install Azure CLI extention
+
+```ps1
+az extension add --upgrade --yes --name connectedk8s
+az extension add --upgrade --yes --name k8s-extension
+az extension add --upgrade --yes --name customlocation
+az extension add --upgrade --yes --name appservice-kube
+```
+
+* Register providers
+
+```ps1
+az provider register --namespace Microsoft.Kubernetes --wait
+az provider register --namespace Microsoft.KubernetesConfiguration --wait
+az provider register --namespace Microsoft.ExtendedLocation --wait
+az provider register --namespace Microsoft.Web --wait
+az provider register --namespace Microsoft.OperationsManagement --wait
+az provider register --namespace Microsoft.OperationalInsights --wait
+```
+
+## Setting up Azure Kubernetes Service
 
 * Create a resource group for AKS
 
@@ -44,34 +73,6 @@ $staticIp=$(az network public-ip show --resource-group $aksComponentsResourceGro
 ```ps1
 az aks install-cli
 az aks get-credentials --resource-group $resourceGroupAks --name $clusterName
-```
-
-## Providers & Extensions
-
-* Log into Azure CLI and follow the instructions
-
-```ps1
-az login
-```
-
-* Install Azure CLI extention
-
-```ps1
-az extension add --upgrade --yes --name connectedk8s
-az extension add --upgrade --yes --name k8s-extension
-az extension add --upgrade --yes --name customlocation
-az extension add --upgrade --yes --name appservice-kube
-```
-
-* Register providers
-
-```ps1
-az provider register --namespace Microsoft.Kubernetes --wait
-az provider register --namespace Microsoft.KubernetesConfiguration --wait
-az provider register --namespace Microsoft.ExtendedLocation --wait
-az provider register --namespace Microsoft.Web --wait
-az provider register --namespace Microsoft.OperationsManagement --wait
-az provider register --namespace Microsoft.OperationalInsights --wait
 ```
 
 ## Setup Azure Arc & connect to Kubernetes cluster
