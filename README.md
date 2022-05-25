@@ -3,6 +3,8 @@
 Running Logic Apps Standard in Azure Kubernetes Service managed by Azure Arc.
 This deployment is based on [this](https://docs.microsoft.com/en-us/azure/app-service/manage-create-arc-environment?tabs=powershell#prerequisites) Microsoft Docs reference.
 
+In this setup I've used AKS to deploy the Logic Apps Standard to, but you can use any Kubernetes cluster provider and connect to it with Azure Arc. Just skip the AKS deployment step and use the next steps to deploy the Logic Apps Standard to any Kubernetes cluster.
+
 ## Architecture
 
 ![ais-dapr-apim](docs/images/arch.png)
